@@ -324,6 +324,7 @@ function set_stuff_for_environment()
 {
     set_lunch_paths
     set_sequence_number
+
 }
 
 function set_sequence_number()
