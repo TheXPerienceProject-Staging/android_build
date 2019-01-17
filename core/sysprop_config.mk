@@ -195,6 +195,10 @@ endif
 
 user_variant := $(filter user userdebug,$(TARGET_BUILD_VARIANT))
 enable_target_debugging := true
+user_variant := user
+ifeq ($(TARGET_BUILD_VARIANT),eng)
+user_variant :=
+endif
 enable_dalvik_lock_contention_logging := true
 ifneq (,$(user_variant))
   # Target is secure in user builds.
