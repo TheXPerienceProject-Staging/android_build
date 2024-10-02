@@ -69,6 +69,8 @@ $(call add_json_bool, Debuggable,                        $(filter userdebug eng,
 $(call add_json_bool, Eng,                               $(filter eng,$(TARGET_BUILD_VARIANT)))
 $(call add_json_str,  BuildType,                         $(TARGET_BUILD_TYPE))
 
+
+$(call add_json_str,  DeviceName,                        $(TARGET_DEVICE))
 $(call add_json_str,  DeviceProduct,                     $(TARGET_PRODUCT))
 $(call add_json_str,  DeviceArch,                        $(TARGET_ARCH))
 $(call add_json_str,  DeviceArchVariant,                 $(TARGET_ARCH_VARIANT))
