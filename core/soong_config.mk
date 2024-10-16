@@ -35,13 +35,6 @@ $(call add_json_str,  BuildHostnameFile,                 build_hostname.txt)
 $(call add_json_str,  BuildThumbprintFile,               build_thumbprint.txt)
 $(call add_json_bool, DisplayBuildNumber,                $(filter true,$(DISPLAY_BUILD_NUMBER)))
 
-$(call add_json_str,  XperienceDevice,                   $(TARGET_DEVICE))
-$(call add_json_str,  XperienceVersion,                  $(XPE_VERSION))
-$(call add_json_str,  XperienceModel,                    $(XPERIENCE_BUILD))
-$(call add_json_str,  XperienceMajorB,                   $(PRODUCT_VERSION_MAJOR))
-$(call add_json_str,  XperienceMinorB,                   $(PRODUCT_VERSION_MINOR))
-$(call add_json_str,  XperienceBuildType,                $(XPE_BUILDTYPE))
-
 $(call add_json_str,  Platform_display_version_name,     $(PLATFORM_DISPLAY_VERSION))
 $(call add_json_str,  Platform_version_name,             $(PLATFORM_VERSION))
 $(call add_json_val,  Platform_sdk_version,              $(PLATFORM_SDK_VERSION))
