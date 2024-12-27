@@ -15,57 +15,9 @@ $(foreach name, $(_additional_prop_var_names),\
 )
 _additional_prop_var_names :=
 
-#
-# -----------------------------------------------------------------
-# Add the product-defined properties to the build properties.
-ifneq ($(BOARD_PROPERTY_OVERRIDES_SPLIT_ENABLED), true)
-  ADDITIONAL_SYSTEM_PROPERTIES += $(PRODUCT_PROPERTY_OVERRIDES)
-else
-  ifndef BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE
-    ADDITIONAL_SYSTEM_PROPERTIES += $(PRODUCT_PROPERTY_OVERRIDES)
-  endif
-endif
-
-ADDITIONAL_SYSTEM_PROPERTIES += ro.treble.enabled=${PRODUCT_FULL_TREBLE}
-
-# Set ro.llndk.api_level to show the maximum vendor API level that the LLNDK in
-# the system partition supports.
-ifdef RELEASE_BOARD_API_LEVEL
-ADDITIONAL_SYSTEM_PROPERTIES += ro.llndk.api_level=$(RELEASE_BOARD_API_LEVEL)
-endif
-
-# Sets ro.actionable_compatible_property.enabled to know on runtime whether the
-# allowed list of actionable compatible properties is enabled or not.
-ADDITIONAL_SYSTEM_PROPERTIES += ro.actionable_compatible_property.enabled=true
-
-# Add the system server compiler filter if they are specified for the product.
-ifneq (,$(PRODUCT_SYSTEM_SERVER_COMPILER_FILTER))
-ADDITIONAL_PRODUCT_PROPERTIES += dalvik.vm.systemservercompilerfilter=$(PRODUCT_SYSTEM_SERVER_COMPILER_FILTER)
-endif
-
-# Add the 16K developer option if it is defined for the product.
-ifeq ($(PRODUCT_16K_DEVELOPER_OPTION),true)
-ADDITIONAL_PRODUCT_PROPERTIES += ro.product.build.16k_page.enabled=true
-else
-ADDITIONAL_PRODUCT_PROPERTIES += ro.product.build.16k_page.enabled=false
-endif
-
-# Enable core platform API violation warnings on userdebug and eng builds.
-ifneq ($(TARGET_BUILD_VARIANT),user)
-ADDITIONAL_SYSTEM_PROPERTIES += persist.debug.dalvik.vm.core_platform_api_policy=just-warn
-endif
-
-# Define ro.sanitize.<name> properties for all global sanitizers.
-ADDITIONAL_SYSTEM_PROPERTIES += $(foreach s,$(SANITIZE_TARGET),ro.sanitize.$(s)=true)
-
-# Sets the default value of ro.postinstall.fstab.prefix to /system.
-# Device board config should override the value to /product when needed by:
-#
-#     PRODUCT_PRODUCT_PROPERTIES += ro.postinstall.fstab.prefix=/product
-#
-# It then uses ${ro.postinstall.fstab.prefix}/etc/fstab.postinstall to
-# mount system_other partition.
-ADDITIONAL_SYSTEM_PROPERTIES += ro.postinstall.fstab.prefix=/system
+$(KATI_obsolete_var ADDITIONAL_SYSTEM_PROPERTIES,Use build/soong/scripts/gen_build_prop.py instead)
+$(KATI_obsolete_var ADDITIONAL_ODM_PROPERTIES,Use build/soong/scripts/gen_build_prop.py instead)
+$(KATI_obsolete_var ADDITIONAL_PRODUCT_PROPERTIES,Use build/soong/scripts/gen_build_prop.py instead)
 
 # Add cpu properties for bionic and ART.
 ADDITIONAL_VENDOR_PROPERTIES += ro.bionic.arch=$(TARGET_ARCH)
@@ -178,19 +130,8 @@ ADDITIONAL_VENDOR_PROPERTIES += \
     ro.build.ab_update=$(AB_OTA_UPDATER)
 endif
 
-ADDITIONAL_PRODUCT_PROPERTIES += ro.build.characteristics=$(TARGET_AAPT_CHARACTERISTICS)
-
 ifeq ($(AB_OTA_UPDATER),true)
-ADDITIONAL_PRODUCT_PROPERTIES += ro.product.ab_ota_partitions=$(subst $(space),$(comma),$(sort $(AB_OTA_PARTITIONS)))
 ADDITIONAL_VENDOR_PROPERTIES += ro.vendor.build.ab_ota_partitions=$(subst $(space),$(comma),$(sort $(AB_OTA_PARTITIONS)))
-endif
-
-# Set this property for VTS to skip large page size tests on unsupported devices.
-ADDITIONAL_PRODUCT_PROPERTIES += \
-    ro.product.cpu.pagesize.max=$(TARGET_MAX_PAGE_SIZE_SUPPORTED)
-
-ifeq ($(PRODUCT_NO_BIONIC_PAGE_SIZE_MACRO),true)
-ADDITIONAL_PRODUCT_PROPERTIES += ro.product.build.no_bionic_page_size_macro=true
 endif
 
 user_variant := $(filter user userdebug,$(TARGET_BUILD_VARIANT))
@@ -278,17 +219,7 @@ ADDITIONAL_SYSTEM_PROPERTIES += ro.force.debuggable=0
 config_enable_uffd_gc := \
   $(firstword $(OVERRIDE_ENABLE_UFFD_GC) $(PRODUCT_ENABLE_UFFD_GC) default)
 
-# This is a temporary system property that controls the ART module. The plan is
-# to remove it by Aug 2025, at which time Mainline updates of the ART module
-# will ignore it as well.
-# If the value is "default", it will be mangled by post_process_props.py.
-ADDITIONAL_PRODUCT_PROPERTIES += ro.dalvik.vm.enable_uffd_gc=$(config_enable_uffd_gc)
-
-ADDITIONAL_SYSTEM_PROPERTIES := $(strip $(ADDITIONAL_SYSTEM_PROPERTIES))
-ADDITIONAL_PRODUCT_PROPERTIES := $(strip $(ADDITIONAL_PRODUCT_PROPERTIES))
 ADDITIONAL_VENDOR_PROPERTIES := $(strip $(ADDITIONAL_VENDOR_PROPERTIES))
 
 .KATI_READONLY += \
-    ADDITIONAL_SYSTEM_PROPERTIES \
-    ADDITIONAL_PRODUCT_PROPERTIES \
     ADDITIONAL_VENDOR_PROPERTIES
